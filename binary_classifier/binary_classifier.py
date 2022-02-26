@@ -30,7 +30,7 @@ def assign_value_to_classes(arr, cls, tgt):
 #reading data and spliting it to train and test set
 import numpy as np
 import pandas as pd
-dataSet = pd.read_csv('dataset.csv').sample(frac=1) #reading and shuffling data 
+dataSet = pd.read_csv('dataset.csv') #reading and shuffling data 
 selected = np.random.rand(len(dataSet)) < 0.70
 
 train = dataSet[selected]
