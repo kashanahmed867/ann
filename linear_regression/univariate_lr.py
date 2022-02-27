@@ -22,13 +22,14 @@ def best_model_in_range(x1_range, x0_range, x, y, m, thetas):
     # initial setting of values
     last_iteration = thetas
     last_min_cost = 999999999 # setting max possible cost
-    last_best_thetas = [1, 1]
+    last_best_thetas = thetas
     for i in range(1, x1_range+1):
         for j in range(1, x0_range+1):
-            min_cost, best_thetas = compare_models(last_iteration, [i, j], x, y, m)
-            last_min_cost = (last_min_cost, min_cost) [min_cost < last_min_cost]
+            current_iteration = [i, j]
+            min_cost, best_thetas = compare_models(last_iteration, current_iteration, x, y, m)
             last_best_thetas = (last_best_thetas, best_thetas) [min_cost < last_min_cost]
-            last_iteration = [i, j]
+            last_min_cost = (last_min_cost, min_cost) [min_cost < last_min_cost]
+            last_iteration = current_iteration
     return last_min_cost, last_best_thetas
 # ------------------------------------------------------------------
 
@@ -72,13 +73,14 @@ def best_model_in_range_r2(x1_range, x0_range, x, y, m, thetas):
     # initial setting of values
     last_iteration = thetas
     last_max_r2 = -999999999 # setting min possible r2
-    last_best_thetas = [1, 1]
+    last_best_thetas = thetas
     for i in range(1, x1_range+1):
         for j in range(1, x0_range+1):
-            max_r2, best_thetas = compare_models_r2(last_iteration, [i, j], x, y, m)
-            last_max_r2 = (last_max_r2, max_r2) [max_r2 > last_max_r2]
+            current_iteration = [i, j]
+            max_r2, best_thetas = compare_models_r2(last_iteration, current_iteration, x, y, m)
             last_best_thetas = (last_best_thetas, best_thetas) [max_r2 > last_max_r2]
-            last_iteration = [i, j]
+            last_max_r2 = (last_max_r2, max_r2) [max_r2 > last_max_r2]
+            last_iteration = current_iteration
     return last_max_r2, last_best_thetas
 # ------------------------------------------------------------------
 
