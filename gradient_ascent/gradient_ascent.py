@@ -26,11 +26,13 @@ def linspace(start, stop, steps):
 
 
 # gradient ascent algorithm
-def gradient_ascent(iterations, step_size, starting_point):
+def gradient_ascent(iterations, step_size, starting_point, boundary_limit):
 	# track all points
 	points, points_x, points_y, scores = list(), list(), list(), list()
 	# generate an initial point
 	point = starting_point
+	# set minimum possible score for loop termination if upcoming score is decreasing
+	last_score = -boundary_limit
 	# run the gradient ascent
 	for i in range(iterations):
 		# calculate gradient
@@ -40,7 +42,10 @@ def gradient_ascent(iterations, step_size, starting_point):
 		point[1] = point[1] + step_size * gradient[1]
 		# evaluate candidate point
 		score = objective(point[0], point[1])
+		# terminate iterations if score exceeding graph boundary limit or score decreasing as per requirement
+		if score >= boundary_limit or last_score >= score: break
 		# store point
+		last_score = score # for conditional termination
 		points_x.append(point[0])
 		points_y.append(point[1])
 		points.append(point)
@@ -50,14 +55,20 @@ def gradient_ascent(iterations, step_size, starting_point):
 # ------------------------------------------------------------------
 
 
-# parameters
-alpha = 0.05
+# learning rate or step, step 2 is very large so taking small step
+alpha = 0.2
 # maximum number of iterations
 iterations = 20
+# boundary limit for final score
+boundary_limit = 100
 # initial point
 starting_point = [1, 1]
+# try random starting point
+# import random
+# starting_point = [random.randint(-10,10), random.randint(-10,10)]
 
-points, points_x, points_y, scores = gradient_ascent(iterations, alpha, starting_point)
+# getting result of gradient ascent
+points, points_x, points_y, scores = gradient_ascent(iterations, alpha, starting_point, boundary_limit)
 # ------------------------------------------------------------------
 
 
@@ -70,7 +81,7 @@ ax = fig.gca(projection='3d') # Create the axes
 X = np.linspace(-10, 10, 100)
 Y = np.linspace(-10, 10, 100)
 X, Y = np.meshgrid(X, Y)
-Z = objective(X, Y)
+Z = objective(X, Y) # For final score
 
 # Plot the 3d surface
 surface = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, rstride = 2, cstride = 2)
@@ -80,6 +91,6 @@ plt.plot(points_x, points_y, scores, '.-', color='red')
 # Set some labels
 ax.set_xlabel('B0')
 ax.set_ylabel('B1')
-ax.set_zlabel('fn')
+ax.set_zlabel('Score')
 
 plt.show()
